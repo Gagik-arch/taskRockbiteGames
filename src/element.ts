@@ -3,9 +3,13 @@ import Vector from "./vector";
 import { gravity, restitution } from "./constants";
 
 class Element {
-    velocity = new Vector(0, 0);
+    public velocity: Vector = new Vector(0, 0);
+    public color: string;
+    public position: Vector = new Vector(0, 0);
+    public radius: number = 0;
+    public mass: number = 0;
 
-    constructor(vector, radius) {
+    constructor(vector: Vector, radius: number) {
         this.color = generateColor();
         this.position = vector;
         this.radius = radius;
@@ -31,12 +35,14 @@ class Element {
         this.position.y += this.velocity.y;
     }
 
-    move(element) {
-        const magnitude = this.position.magnitude(element.position);
+    move(element: Element) {
+        const magnitude: number = this.position.magnitude(element.position);
         if (magnitude < this.radius + element.radius) {
-            const nx = (element.position.x - this.position.x) / magnitude;
-            const ny = (element.position.y - this.position.y) / magnitude;
-            const p =
+            const nx: number =
+                (element.position.x - this.position.x) / magnitude;
+            const ny: number =
+                (element.position.y - this.position.y) / magnitude;
+            const p: number =
                 (2 *
                     (this.velocity.x * nx +
                         this.velocity.y * ny -
@@ -44,7 +50,7 @@ class Element {
                         element.velocity.y * ny)) /
                 (this.mass + element.mass);
 
-            const colPointX =
+            const colPointX: number =
                 (this.position.x * element.radius +
                     element.position.x * this.radius) /
                 (this.radius + element.radius);

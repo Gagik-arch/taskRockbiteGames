@@ -1,8 +1,8 @@
 class CMath {
-    static radianToDegree(radian) {
+    static radianToDegree(radian: number): number {
         return (180 / Math.PI) * radian;
     }
-    static degreeToRadian(degree) {
+    static degreeToRadian(degree: number): number {
         return degree * (Math.PI / 180);
     }
 }

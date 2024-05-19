@@ -1,20 +1,25 @@
-class Animator {
-    static count = 0;
+type TimeOut = {
+    timeout: number;
+    multiplier: number;
+};
 
-    static request = (fn) => {
+class Animator {
+    static count: number = 0;
+
+    static request = (fn: FrameRequestCallback) => {
         return typeof requestAnimationFrame !== typeof undefined
             ? requestAnimationFrame(fn)
             : setTimeout(fn);
     };
 
-    static timeouts = {
+    static timeouts: { [key: string]: number } = {
         default: 400,
         slow: 700,
         fast: 150,
     };
 
     static animate(
-        callback,
+        callback: Function,
         timeout = Animator.timeouts.default,
         {
             from = 0,
@@ -24,13 +29,15 @@ class Animator {
         } = {}
     ) {
         this.count++;
-        let passed = 0;
-        let date = Date.now();
-        const fn = () => {
+        let passed: number = 0;
+        let date: number = Date.now();
+        const fn = (): void => {
             passed += Date.now() - date;
-            const done = passed >= timeout;
-            const factor = passed / timeout;
-            const state = easing((factor > 1 ? 1 : factor) * multiplier);
+            const done: boolean = passed >= timeout;
+            const factor: number = passed / timeout;
+            const state: number = easing(
+                (factor > 1 ? 1 : factor) * multiplier
+            );
             callback?.(from + (to - from) * state, done);
             date = Date.now();
             done && this.count--;
@@ -42,11 +49,11 @@ class Animator {
     static dimensions = (
         from = [0, 0],
         to = [0, 0],
-        callback,
-        { timeout, multiplier = 1 } = {}
+        callback: Function,
+        { timeout = Animator.timeouts.default, multiplier = 1 }: TimeOut
     ) => {
         Animator.animate(
-            (state, done) => {
+            (state: number, done: boolean) => {
                 const stateArray = [];
                 for (let i = 0; i < from.length; i++) {
                     const fromNum = from[i];
@@ -62,79 +69,84 @@ class Animator {
     };
 
     static easing = {
-        linear: (x) => x,
+        linear: (x: number): number => x,
 
-        easeInSine: (x) => -Math.cos(x * (Math.PI / 2)) + 1,
-        easeInQuad: (x) => Math.pow(x, 2),
-        easeInCubic: (x) => Math.pow(x, 3),
-        easeInQuart: (x) => Math.pow(x, 4),
-        easeInQuint: (x) => Math.pow(x, 5),
-        easeInExpo: (x) => (x === 0 ? 0 : Math.pow(2, 10 * (x - 1))),
-        easeInCirc: (x) => -(Math.sqrt(1 - x * x) - 1),
-        easeInBack: (x) => x * x * ((1.70158 + 1) * x - 1.70158),
+        easeInSine: (x: number): number => -Math.cos(x * (Math.PI / 2)) + 1,
+        easeInQuad: (x: number): number => Math.pow(x, 2),
+        easeInCubic: (x: number): number => Math.pow(x, 3),
+        easeInQuart: (x: number): number => Math.pow(x, 4),
+        easeInQuint: (x: number): number => Math.pow(x, 5),
+        easeInExpo: (x: number): number =>
+            x === 0 ? 0 : Math.pow(2, 10 * (x - 1)),
+        easeInCirc: (x: number): number => -(Math.sqrt(1 - x * x) - 1),
+        easeInBack: (x: number): number =>
+            x * x * ((1.70158 + 1) * x - 1.70158),
 
-        easeOutSine: (x) => Math.sin(x * (Math.PI / 2)),
-        easeOutQuad: (x) => -(Math.pow(x - 1, 2) - 1),
-        easeOutCubic: (x) => Math.pow(x - 1, 3) + 1,
-        easeOutQuart: (x) => -(Math.pow(x - 1, 4) - 1),
-        easeOutQuint: (x) => Math.pow(x - 1, 5) + 1,
-        easeOutExpo: (x) => (x === 1 ? 1 : -Math.pow(2, -10 * x) + 1),
-        easeOutCirc: (x) => Math.sqrt(1 - Math.pow(x - 1, 2)),
-        easeOutBack: (x) => (x = x - 1) * x * ((1.70158 + 1) * x + 1.70158) + 1,
+        easeOutSine: (x: number): number => Math.sin(x * (Math.PI / 2)),
+        easeOutQuad: (x: number): number => -(Math.pow(x - 1, 2) - 1),
+        easeOutCubic: (x: number): number => Math.pow(x - 1, 3) + 1,
+        easeOutQuart: (x: number): number => -(Math.pow(x - 1, 4) - 1),
+        easeOutQuint: (x: number): number => Math.pow(x - 1, 5) + 1,
+        easeOutExpo: (x: number): number =>
+            x === 1 ? 1 : -Math.pow(2, -10 * x) + 1,
+        easeOutCirc: (x: number): number => Math.sqrt(1 - Math.pow(x - 1, 2)),
+        easeOutBack: (x: number): number =>
+            (x = x - 1) * x * ((1.70158 + 1) * x + 1.70158) + 1,
 
-        easeInOutSine: (x) => -0.5 * (Math.cos(Math.PI * x) - 1),
-        easeInOutQuad: (x) =>
+        easeInOutSine: (x: number): number =>
+            -0.5 * (Math.cos(Math.PI * x) - 1),
+        easeInOutQuad: (x: number): number =>
             (x /= 0.5) < 1 ? 0.5 * Math.pow(x, 2) : -0.5 * ((x -= 2) * x - 2),
-        easeInOutCubic: (x) =>
+        easeInOutCubic: (x: number): number =>
             (x /= 0.5) < 1
                 ? 0.5 * Math.pow(x, 3)
                 : 0.5 * (Math.pow(x - 2, 3) + 2),
-        easeInOutQuart: (x) =>
+        easeInOutQuart: (x: number): number =>
             (x /= 0.5) < 1
                 ? 0.5 * Math.pow(x, 4)
                 : -0.5 * ((x -= 2) * Math.pow(x, 3) - 2),
-        easeInOutQuint: (x) =>
+        easeInOutQuint: (x: number): number =>
             (x /= 0.5) < 1
                 ? 0.5 * Math.pow(x, 5)
                 : 0.5 * (Math.pow(x - 2, 5) + 2),
-        easeInOutExpo: (x) => {
+        easeInOutExpo: (x: number): number => {
             if (x === 0 || x === 1) return x;
             if ((x /= 0.5) < 1) return 0.5 * Math.pow(2, 10 * (x - 1));
             return 0.5 * (-Math.pow(2, -10 * --x) + 2);
         },
-        easeInOutCirc: (x) =>
+        easeInOutCirc: (x: number): number =>
             (x /= 0.5) < 1
                 ? -0.5 * (Math.sqrt(1 - x * x) - 1)
                 : 0.5 * (Math.sqrt(1 - (x -= 2) * x) + 1),
-        easeInOutBack: (x) => {
+        easeInOutBack: (x: number): number => {
             let s = 1.70158;
             if ((x /= 0.5) < 1)
                 return 0.5 * (x * x * (((s *= 1.525) + 1) * x - s));
             return 0.5 * ((x -= 2) * x * (((s *= 1.525) + 1) * x + s) + 2);
         },
 
-        elastic: (x) =>
+        elastic: (x: number): number =>
             -1 *
                 Math.pow(4, -8 * x) *
                 Math.sin(((x * 6 - 1) * (2 * Math.PI)) / 2) +
             1,
 
-        swingTo: (x) => {
+        swingTo: (x: number): number => {
             const s = 1.70158;
             return (x -= 1) * x * ((s + 1) * x + s) + 1;
         },
-        swingFrom: (x) => {
+        swingFrom: (x: number): number => {
             const s = 1.70158;
             return x * x * ((s + 1) * x - s);
         },
-        swingFromTo: (x) => {
+        swingFromTo: (x: number): number => {
             let s = 1.70158;
             return (x /= 0.5) < 1
                 ? 0.5 * (x * x * (((s *= 1.525) + 1) * x - s))
                 : 0.5 * ((x -= 2) * x * (((s *= 1.525) + 1) * x + s) + 2);
         },
 
-        bounce: (x) => {
+        bounce: (x: number): number => {
             if (x < 1 / 2.75) {
                 return 7.5625 * x * x;
             } else if (x < 2 / 2.75) {
@@ -145,7 +157,7 @@ class Animator {
                 return 7.5625 * (x -= 2.625 / 2.75) * x + 0.984375;
             }
         },
-        bouncePast: (x) => {
+        bouncePast: (x: number): number => {
             if (x < 1 / 2.75) {
                 return 7.5625 * x * x;
             } else if (x < 2 / 2.75) {
@@ -157,22 +169,13 @@ class Animator {
             }
         },
 
-        easeFromTo: (x) =>
+        easeFromTo: (x: number): number =>
             (x /= 0.5) < 1
                 ? 0.5 * Math.pow(x, 4)
                 : -0.5 * ((x -= 2) * Math.pow(x, 3) - 2),
-        easeFrom: (x) => Math.pow(x, 4),
-        easeTo: (x) => Math.pow(x, 0.25),
+        easeFrom: (x: number): number => Math.pow(x, 4),
+        easeTo: (x: number): number => Math.pow(x, 0.25),
     };
 }
-
-//
-// Animator.dimensions([1, 2], [-2, 1], (state, done) => {
-// 	console.log(state)
-// }, {timeout: 1000})
-
-// Animator.animate((state) => {
-// 	console.log(state)
-// })
 
 export default Animator;
