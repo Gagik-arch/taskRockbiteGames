@@ -1,7 +1,7 @@
 import { genRandomNumber } from "./utils";
 import Element from "./element";
 import Vector from "./vector";
-import { Colors } from "./constants";
+import { Colors, ballRadius } from "./constants";
 import Animator from "./animator";
 
 class Canvas {
@@ -38,25 +38,32 @@ class Canvas {
     }
 
     private generateElement(i: number) {
-        const radius = 30;
         if (this.canvas && this.ctx) {
-            let x = genRandomNumber(radius, this.canvas.width - radius);
-            let y = genRandomNumber(radius, this.ctx.canvas.height - radius);
+            let x: number = genRandomNumber(
+                ballRadius,
+                this.canvas.width - ballRadius
+            );
+            let y: number = genRandomNumber(
+                ballRadius,
+                this.ctx.canvas.height - ballRadius
+            );
 
-            const vector = new Vector(x, y);
+            const vector: Vector = new Vector(x, y);
 
-            let elementIsAvailable = this.elements.find((element: Element) => {
-                return (
-                    element.position.magnitude(vector) <=
-                    element.radius + radius
-                );
-            });
+            const elementIsAvailable: Element | undefined = this.elements.find(
+                (element: Element) => {
+                    return (
+                        element.position.magnitude(vector) <=
+                        element.radius + ballRadius
+                    );
+                }
+            );
 
             if (elementIsAvailable) {
                 this.generateElement(i);
                 return;
             } else {
-                this.elements.push(new Element(vector, radius));
+                this.elements.push(new Element(vector, ballRadius));
                 return;
             }
         }
@@ -93,7 +100,7 @@ class Canvas {
         }
     }
 
-    private drawTrajectory() {
+    private drawTrajectory(): void {
         if (this.newElement != null) {
             this.drawCircle(
                 this.newElement.position,
@@ -113,7 +120,7 @@ class Canvas {
         radius: number,
         backgroundColor: string | null = "rgba(0,0,0,0)",
         dashed: boolean = false
-    ) {
+    ): void {
         if (!this.ctx) return;
         this.ctx.save();
 
@@ -142,7 +149,7 @@ class Canvas {
         to: Vector,
         dashed: boolean = false,
         color: string = Colors.gray
-    ) {
+    ): void {
         if (this.ctx) {
             this.ctx.save();
 
@@ -164,9 +171,21 @@ class Canvas {
     }
 
     onMouseDown(e: MouseEvent): void {
-        const position: Vector = new Vector(e.offsetX, e.offsetY);
+        if (!this.canvas) return;
 
-        this.newElement = new Element(position, 30);
+        const x: number = Math.max(
+            ballRadius,
+            Math.min(e.offsetX, this.canvas.width - ballRadius)
+        );
+
+        const y: number = Math.max(
+            ballRadius,
+            Math.min(e.offsetY, this.canvas.height - ballRadius)
+        );
+
+        const position: Vector = new Vector(x, y);
+
+        this.newElement = new Element(position, ballRadius);
 
         Animator.animate(
             (state: number, isDone: boolean) => {
