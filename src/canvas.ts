@@ -3,6 +3,7 @@ import Element from "./element";
 import Vector from "./vector";
 import { Colors } from "./constants";
 import Animator from "./animator";
+import CMath from "./math";
 
 class Canvas {
     private ctx?: CanvasRenderingContext2D | null;
@@ -88,7 +89,7 @@ class Canvas {
 
             this.ctx.font = "20px serif";
             this.ctx.fillText(
-                `Ball quantity ${this.elements.length.toString()}`,
+                `Balls quantity ${this.elements.length.toString()}`,
                 10,
                 30
             );
@@ -125,8 +126,42 @@ class Canvas {
 
             if (this.mouse) {
                 this.drawLine(this.newElement.position, this.mouse, true);
+                const aim = this.newElement.position.getInvertedVector(
+                    this.mouse
+                );
+
+                this.drawArrow(this.newElement.position, aim, 6);
             }
         }
+    }
+
+    drawArrow(v1: Vector, v2: Vector, headLength: number) {
+        if (!this.ctx) return;
+
+        const degreesInRadians225: number = CMath.degreeToRadian(225);
+        const degreesInRadians135: number = CMath.degreeToRadian(135);
+
+        const dx = v2.x - v1.x;
+        const dy = v2.y - v1.y;
+        const angle = Math.atan2(dy, dx);
+
+        const x225 = v2.x + headLength * Math.cos(angle + degreesInRadians225);
+        const y225 = v2.y + headLength * Math.sin(angle + degreesInRadians225);
+        const x135 = v2.x + headLength * Math.cos(angle + degreesInRadians135);
+        const y135 = v2.y + headLength * Math.sin(angle + degreesInRadians135);
+
+        this.ctx.save();
+        this.ctx.beginPath();
+        this.ctx.setLineDash([6]);
+        this.ctx.strokeStyle = Colors.gray;
+        this.ctx.moveTo(v1.x, v1.y);
+        this.ctx.lineTo(v2.x, v2.y);
+        this.ctx.moveTo(v2.x, v2.y);
+        this.ctx.lineTo(x225, y225);
+        this.ctx.moveTo(v2.x, v2.y);
+        this.ctx.lineTo(x135, y135);
+        this.ctx.stroke();
+        this.ctx.restore();
     }
 
     private drawCircle(
@@ -137,15 +172,15 @@ class Canvas {
     ): void {
         if (!this.ctx) return;
         this.ctx.save();
-
         this.ctx.beginPath();
+
         this.ctx.lineWidth = 1;
         this.ctx.strokeStyle = Colors.gray;
 
         this.ctx.arc(vector.x, vector.y, radius, 0, Math.PI * 2);
 
         if (dashed) {
-            this.ctx.setLineDash([10]);
+            this.ctx.setLineDash([6]);
         }
 
         if (backgroundColor) {
