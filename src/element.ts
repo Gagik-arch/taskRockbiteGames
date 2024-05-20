@@ -37,17 +37,16 @@ class Element {
 
     move(element: Element) {
         const magnitude: number = this.position.magnitude(element.position);
+
         if (magnitude < this.radius + element.radius) {
-            const nx: number =
-                (element.position.x - this.position.x) / magnitude;
-            const ny: number =
-                (element.position.y - this.position.y) / magnitude;
-            const p: number =
+            const collisionNorm: Vector = this.collisionNorm(element);
+
+            const impulse: number =
                 (2 *
-                    (this.velocity.x * nx +
-                        this.velocity.y * ny -
-                        element.velocity.x * nx -
-                        element.velocity.y * ny)) /
+                    (this.velocity.x * collisionNorm.x +
+                        this.velocity.y * collisionNorm.y -
+                        element.velocity.x * collisionNorm.x -
+                        element.velocity.y * collisionNorm.y)) /
                 (this.mass + element.mass);
 
             const collisionVector = this.getCollisionPoint(element);
@@ -69,10 +68,10 @@ class Element {
                 (element.radius * (element.position.y - this.position.y)) /
                     magnitude;
 
-            this.velocity.x -= p * this.mass * nx;
-            this.velocity.y -= p * this.mass * ny;
-            element.velocity.x += p * element.mass * nx;
-            element.velocity.y += p * element.mass * ny;
+            this.velocity.x -= impulse * this.mass * collisionNorm.x;
+            this.velocity.y -= impulse * this.mass * collisionNorm.y;
+            element.velocity.x += impulse * element.mass * collisionNorm.x;
+            element.velocity.y += impulse * element.mass * collisionNorm.y;
         }
     }
 
@@ -88,6 +87,16 @@ class Element {
             (this.radius + element.radius);
 
         return new Vector(x, y);
+    }
+
+    collisionNorm(element: Element) {
+        const collisionVector = element.position.subtract(this.position);
+        const magnitude = this.position.magnitude(element.position);
+
+        return new Vector(
+            collisionVector.x / magnitude,
+            collisionVector.y / magnitude
+        );
     }
 }
 
