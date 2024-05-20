@@ -1,7 +1,7 @@
 <h1>Rockbite Games task </h1> 
 <h3>By Gagik Chilingaryan </h3> 
  
-<h6>Implemented with Vanila type script, Vite and HTML Canvas for rendering (no libraries)</6>
+<h6>Implemented with Vanilla typescript, Vite and HTML Canvas for rendering (no libraries)</6>
 
 <h4>Instractions</h4>
 <ol>
