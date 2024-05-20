@@ -1,7 +1,7 @@
 import { genRandomNumber } from "./utils";
 import Element from "./element";
 import Vector from "./vector";
-import { Colors, ballRadius } from "./constants";
+import { Colors } from "./constants";
 import Animator from "./animator";
 
 class Canvas {
@@ -42,22 +42,16 @@ class Canvas {
 
     private generateElement(i: number) {
         if (this.canvas) {
-            let x: number = genRandomNumber(
-                ballRadius,
-                this.canvas.width - ballRadius
-            );
-            let y: number = genRandomNumber(
-                ballRadius,
-                this.canvas.height - ballRadius
-            );
+            const R: number = genRandomNumber(20, 40);
+            let x: number = genRandomNumber(R, this.canvas.width - R);
+            let y: number = genRandomNumber(R, this.canvas.height - R);
 
             const vector: Vector = new Vector(x, y);
 
             const elementIsAvailable: Element | undefined = this.elements.find(
                 (element: Element) => {
                     return (
-                        element.position.magnitude(vector) <=
-                        element.radius + ballRadius
+                        element.position.magnitude(vector) <= element.radius + R
                     );
                 }
             );
@@ -66,7 +60,7 @@ class Canvas {
                 this.generateElement(i);
                 return;
             } else {
-                this.elements.push(new Element(vector, ballRadius));
+                this.elements.push(new Element(vector, R));
                 return;
             }
         }
@@ -192,20 +186,20 @@ class Canvas {
 
     onMouseDown(e: MouseEvent): void {
         if (!this.canvas) return;
-
+        const radius: number = genRandomNumber(20, 40);
         const x: number = Math.max(
-            ballRadius,
-            Math.min(e.offsetX, this.canvas.width - ballRadius)
+            radius,
+            Math.min(e.offsetX, this.canvas.width - radius)
         );
 
         const y: number = Math.max(
-            ballRadius,
-            Math.min(e.offsetY, this.canvas.height - ballRadius)
+            radius,
+            Math.min(e.offsetY, this.canvas.height - radius)
         );
 
         const position: Vector = new Vector(x, y);
 
-        this.newElement = new Element(position, ballRadius);
+        this.newElement = new Element(position, radius);
 
         Animator.animate(
             (state: number, isDone: boolean) => {

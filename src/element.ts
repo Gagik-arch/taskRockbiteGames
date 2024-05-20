@@ -68,10 +68,10 @@ class Element {
                 (element.radius * (element.position.y - this.position.y)) /
                     magnitude;
 
-            this.velocity.x -= impulse * this.mass * collisionNorm.x;
-            this.velocity.y -= impulse * this.mass * collisionNorm.y;
-            element.velocity.x += impulse * element.mass * collisionNorm.x;
-            element.velocity.y += impulse * element.mass * collisionNorm.y;
+            this.velocity.x -= impulse * element.mass * collisionNorm.x;
+            this.velocity.y -= impulse * element.mass * collisionNorm.y;
+            element.velocity.x += impulse * this.mass * collisionNorm.x;
+            element.velocity.y += impulse * this.mass * collisionNorm.y;
         }
     }
 
