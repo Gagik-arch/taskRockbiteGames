@@ -50,29 +50,22 @@ class Element {
                         element.velocity.y * ny)) /
                 (this.mass + element.mass);
 
-            const colPointX: number =
-                (this.position.x * element.radius +
-                    element.position.x * this.radius) /
-                (this.radius + element.radius);
-            const colPointY =
-                (this.position.y * element.radius +
-                    element.position.y * this.radius) /
-                (this.radius + element.radius);
+            const collisionVector = this.getCollisionPoint(element);
 
             this.position.x =
-                colPointX +
+                collisionVector.x +
                 (this.radius * (this.position.x - element.position.x)) /
                     magnitude;
             this.position.y =
-                colPointY +
+                collisionVector.y +
                 (this.radius * (this.position.y - element.position.y)) /
                     magnitude;
             element.position.x =
-                colPointX +
+                collisionVector.x +
                 (element.radius * (element.position.x - this.position.x)) /
                     magnitude;
             element.position.y =
-                colPointY +
+                collisionVector.y +
                 (element.radius * (element.position.y - this.position.y)) /
                     magnitude;
 
@@ -81,6 +74,20 @@ class Element {
             element.velocity.x += p * element.mass * nx;
             element.velocity.y += p * element.mass * ny;
         }
+    }
+
+    getCollisionPoint(element: Element): Vector {
+        const x: number =
+            (this.position.x * element.radius +
+                element.position.x * this.radius) /
+            (this.radius + element.radius);
+
+        const y =
+            (this.position.y * element.radius +
+                element.position.y * this.radius) /
+            (this.radius + element.radius);
+
+        return new Vector(x, y);
     }
 }
 

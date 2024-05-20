@@ -56,3 +56,14 @@ body {
         background-color: rgb(118, 194, 224);
     }
 }
+
+#count {
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 16px;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    user-select: none;
+}

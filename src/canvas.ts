@@ -24,28 +24,31 @@ class Canvas {
 
             this.ctx = canvas.getContext("2d");
 
-            for (let i = 0; i < 4; i++) {
+            this.elementGenerator();
+        }
+    }
+
+    public elementGenerator(quantity: number = 4): void {
+        const count = quantity - this.elements.length;
+
+        if (quantity < this.elements.length) {
+            this.elements = this.elements.splice(0, quantity);
+        } else {
+            for (let i = 0; i < count; i++) {
                 this.generateElement(i);
             }
         }
     }
 
-    public resize(width: number, height: number) {
-        if (this.canvas) {
-            this.canvas.width = width;
-            this.canvas.height = height;
-        }
-    }
-
     private generateElement(i: number) {
-        if (this.canvas && this.ctx) {
+        if (this.canvas) {
             let x: number = genRandomNumber(
                 ballRadius,
                 this.canvas.width - ballRadius
             );
             let y: number = genRandomNumber(
                 ballRadius,
-                this.ctx.canvas.height - ballRadius
+                this.canvas.height - ballRadius
             );
 
             const vector: Vector = new Vector(x, y);
@@ -69,9 +72,17 @@ class Canvas {
         }
     }
 
+    public resize(width: number, height: number) {
+        if (this.canvas) {
+            this.canvas.width = width;
+            this.canvas.height = height;
+        }
+    }
+
     public draw(): void {
         if (this.canvas && this.ctx) {
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
             this.elements.forEach((element) => {
                 this.drawCircle(
                     element.position,
@@ -79,6 +90,15 @@ class Canvas {
                     element.color
                 );
             });
+            this.ctx.fillStyle = "rgba(0,0,0,0.8)";
+
+            this.ctx.font = "20px serif";
+            this.ctx.fillText(
+                `Ball quantity ${this.elements.length.toString()}`,
+                10,
+                30
+            );
+
             this.drawTrajectory();
 
             this.elements.forEach((element) => {
