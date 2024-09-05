@@ -1,9 +1,9 @@
-import { genRandomNumber } from "./utils";
-import Element from "./element";
-import Vector from "./vector";
-import { Colors } from "./constants";
-import Animator from "./animator";
-import CMath from "./math";
+import { genRandomNumber } from './utils';
+import Element from './element';
+import Vector from './vector';
+import { Colors } from './constants';
+import Animator from './animator';
+import CMath from './math';
 
 class Canvas {
     private ctx?: CanvasRenderingContext2D | null;
@@ -15,15 +15,15 @@ class Canvas {
     private animationRadius: number = 0;
 
     constructor(width = window.innerWidth, height = window.innerHeight) {
-        const root: HTMLElement | null = document.getElementById("app");
-        const canvas: HTMLCanvasElement = document.createElement("canvas");
+        const root: HTMLElement | null = document.getElementById('app');
+        const canvas: HTMLCanvasElement = document.createElement('canvas');
         if (root) {
             root.appendChild(canvas);
 
             this.canvas = canvas;
             this.resize(width, height);
 
-            this.ctx = canvas.getContext("2d");
+            this.ctx = canvas.getContext('2d');
 
             this.elementGenerator();
         }
@@ -85,9 +85,9 @@ class Canvas {
                     element.color
                 );
             });
-            this.ctx.fillStyle = "rgba(0,0,0,0.8)";
+            this.ctx.fillStyle = 'rgba(0,0,0,0.8)';
 
-            this.ctx.font = "20px serif";
+            this.ctx.font = '20px serif';
             this.ctx.fillText(
                 `Balls quantity ${this.elements.length.toString()}`,
                 10,
@@ -144,12 +144,16 @@ class Canvas {
         const dx = v2.x - v1.x;
         const dy = v2.y - v1.y;
         const angle = Math.atan2(dy, dx);
-
+        console.log(1312);
+        console.log(1312);
+        console.log(1312);
+        console.log(1312);
+        console.log(1312);
+        console.log(2222);
         const x225 = v2.x + headLength * Math.cos(angle + degreesInRadians225);
         const y225 = v2.y + headLength * Math.sin(angle + degreesInRadians225);
         const x135 = v2.x + headLength * Math.cos(angle + degreesInRadians135);
         const y135 = v2.y + headLength * Math.sin(angle + degreesInRadians135);
-
         this.ctx.save();
         this.ctx.beginPath();
         this.ctx.setLineDash([6]);
@@ -167,7 +171,7 @@ class Canvas {
     private drawCircle(
         vector: Vector,
         radius: number,
-        backgroundColor: string | null = "rgba(0,0,0,0)",
+        backgroundColor: string | null = 'rgba(0,0,0,0)',
         dashed: boolean = false
     ): void {
         if (!this.ctx) return;
