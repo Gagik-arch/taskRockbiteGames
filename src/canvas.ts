@@ -140,6 +140,7 @@ class Canvas {
 
         const degreesInRadians225: number = CMath.degreeToRadian(225);
         const degreesInRadians135: number = CMath.degreeToRadian(135);
+        console.log(111);
 
         const dx = v2.x - v1.x;
         const dy = v2.y - v1.y;
