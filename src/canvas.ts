@@ -144,12 +144,7 @@ class Canvas {
         const dx = v2.x - v1.x;
         const dy = v2.y - v1.y;
         const angle = Math.atan2(dy, dx);
-        console.log(1312);
-        console.log(1312);
-        console.log(1312);
-        console.log(1312);
-        console.log(1312);
-        console.log(2222);
+
         const x225 = v2.x + headLength * Math.cos(angle + degreesInRadians225);
         const y225 = v2.y + headLength * Math.sin(angle + degreesInRadians225);
         const x135 = v2.x + headLength * Math.cos(angle + degreesInRadians135);
